@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/* --- 1. VARIABEL TEMA (GABUNGAN NEXT.JS & DASHBOARD) --- */
+:root {
+  /* Bawaan Next.js */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Variabel Custom Dashboard Filtrona */
+  --primary-dark: #1e3a8a; 
+  --primary-light: #3b82f6; 
+  --accent-red: #ef4444;
+  --accent-green: #10b981;
+  --glass-white: rgba(255, 255, 255, 0.85);
+  --glass-dark: rgba(30, 58, 138, 0.85);
+  --text-dark: #1e293b;
+  --text-light: #f8fafc;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* --- 2. RESET & BASE STYLING (PERBAIKAN) --- */
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body {
+  background: url("/bg.jpg") no-repeat center top fixed, linear-gradient(135deg, #e0f2fe, #f0f9ff);
+  background-size: cover;
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: auto; 
+}
+
+/* --- PERBAIKAN INTERAKSI --- */
+button, select, input, textarea, .nav-btn, .cal-cell {
+  pointer-events: auto !important; /* Paksa tombol aktif */
+  cursor: pointer !important;
+}
+
+.main-container { 
+  display: flex; 
+  flex: 1; 
+  padding: 20px; 
+  gap: 20px; 
+  position: relative; 
+  z-index: 10; 
+}
+
+/* --- 3. KOMPONEN DASHBOARD --- */
+
+/* ========================================================================= */
+/* --- HEADER RESET & CLEAN STYLING (PERBAIKAN TUMPANG TINDIH) --- */
+/* ========================================================================= */
+.header {
+  position: relative;
+  background-color: #ffffff; /* Latar putih solid untuk menutupi background */
+  margin: 15px 20px 0 20px; /* Jarak agar melayang */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  z-index: 50;
+}
+
+/* Garis Biru Muda (Stripe) di atas header */
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(90deg, #7dd3fc, #bae6fd);
+}
+
+/* Memperbesar ukuran gambar Logo di dalam header */
+.header img {
+  height: 45px !important;
+  object-fit: contain;
+  margin-top: 5px;
+}
+
+/* Menyembunyikan tulisan logo teks yang lama (jika masih ada di HTML) */
+.logo-text {
+  display: none !important;
+}
+
+/* Desain Title "DASHBOARD QUALITY ALERT" berbentuk Kapsul/Pill */
+.title-banner, .header-title-wrapper {
+  background-color: #273c75; /* Biru Gelap Profesional */
+  color: #ffffff;
+  padding: 12px 40px !important;
+  border-radius: 50px !important; /* Membuatnya berbentuk pill */
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase;
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25) !important;
+}
+/* ========================================================================= */
+
+
+/* --- MAIN LAYOUT --- */
+.main-container { display: flex; flex: 1; padding: 20px; gap: 20px; height: calc(100vh - 85px); }
+
+/* --- SIDEBAR --- */
+.sidebar { width: 230px; display: flex; flex-direction: column; gap: 15px; }
+.nav-btn {
+  background: var(--glass-white); backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.4); padding: 15px; border-radius: 15px;
+  font-weight: 700; font-size: 14px; color: var(--primary-dark);
+  cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s;
+}
+.nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.nav-btn.active { background: linear-gradient(135deg, var(--primary-dark), var(--primary-light)); color: white; border: none; }
+
+/* --- KALENDER INTERAKTIF --- */
+.calendar {
+  margin-top: auto; background: var(--glass-white); backdrop-filter: blur(10px);
+  border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.5);
+  display: flex; flex-direction: column;
+}
+.calendar-header {
+  background: var(--accent-red); color: white; display: flex; justify-content: space-between;
+  align-items: center; padding: 12px 15px; font-weight: bold; font-size: 14px;
+}
+.cal-nav-btn { background: none; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; padding: 0 5px; }
+.cal-nav-btn:hover { transform: scale(1.2); }
+
+.month-picker {
+  background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold;
+  font-size: 13px; font-family: inherit; cursor: pointer; outline: none; text-align: center; border-radius: 5px; padding: 3px 5px;
+}
+.month-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; padding: 0; margin-left: 5px; }
+
+.calendar-body { padding: 15px; font-size: 12px; text-align: center; display: flex; flex-direction: column; flex: 1; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
+.cal-head { font-weight: 800; color: var(--primary-dark); padding-bottom: 5px; font-size: 11px; }
+
+#calDates { min-height: 175px; align-content: start; }
+
+.cal-cell { padding: 6px 0; cursor: pointer; border-radius: 6px; font-weight: 600; transition: 0.2s; color: #334155; font-size: 11px; display: flex; align-items: center; justify-content: center; height: 25px; }
+.cal-cell:hover:not(.empty) { background-color: #e2e8f0; transform: scale(1.1); }
+.cal-cell.active { background-color: var(--primary-dark); color: white; box-shadow: 0 2px 5px rgba(30, 58, 138, 0.4); transform: scale(1.1); z-index: 2; }
+.cal-cell.empty { cursor: default; }
+
+.btn-reset { padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; background: #f1f5f9; color: var(--primary-dark); transition: 0.3s; margin-top: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.btn-reset:hover { background: var(--accent-red); color: white; }
+
+/* --- FORM AREA (KIRI) --- */
+.form-area {
+  flex: 1.2; background: var(--glass-dark); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+  padding: 25px; color: var(--text-light); overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.form-area::-webkit-scrollbar { width: 6px; }
+.form-area::-webkit-scrollbar-thumb { background: #64748b; border-radius: 10px; }
+
+.form-group { display: grid; grid-template-columns: 150px 1fr; align-items: center; margin-bottom: 15px; gap: 10px; }
+.form-group label { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
+input, select { width: 100%; padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); font-size: 12px; background: rgba(255,255,255,0.95); color: var(--text-dark); outline: none; transition: 0.3s; cursor: pointer; }
+input:focus, select:focus { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); }
+input[readonly] { background: #cbd5e1; color: #475569; font-weight: 700; cursor: not-allowed; border: none; }
+
+.btn-group { display: flex; gap: 8px; }
+.toggle-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; background: white; color: var(--text-dark); font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.toggle-btn.active { background: var(--primary-light); color: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+
+.btn-submit {
+  width: 100%; padding: 15px; margin-top: 20px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, var(--accent-green), #059669); color: white;
+  font-weight: 800; font-size: 15px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
+.btn-submit:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6); }
+
+/* --- DATABASE AREA (KANAN) --- */
+.db-area {
+  flex: 1.8; background: var(--glass-white); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+.db-header {
+  padding: 15px 25px; font-weight: 900; font-size: 18px; letter-spacing: 1.5px;
+  color: var(--primary-dark); border-bottom: 2px solid rgba(0,0,0,0.05);
+  display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.5);
+}
+
+.export-group { display: flex; gap: 10px; }
+.btn-export { padding: 8px 15px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; color: white; display: flex; align-items: center; gap: 5px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+.btn-excel { background: linear-gradient(135deg, #10b981, #059669); } .btn-excel:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+.btn-pdf { background: linear-gradient(135deg, #ef4444, #dc2626); } .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+.table-container { flex: 1; overflow-y: auto; overflow-x: auto; padding: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; color: #334155; }
+th { background: #f8fafc; color: var(--primary-dark); position: sticky; top: 0; z-index: 1; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+tr:hover { background-color: #e0f2fe; }
+
+.db-footer { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; background: rgba(248, 250, 252, 0.8); border-top: 1px solid rgba(0,0,0,0.05); color: var(--primary-dark); font-weight: bold; }
+.pagination { display: flex; align-items: center; gap: 12px; }
+.arrow-btn { background: white; border: 1px solid #cbd5e1; font-weight: bold; font-size: 12px; cursor: pointer; color: var(--primary-dark); padding: 6px 12px; border-radius: 8px; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.arrow-btn:hover { background: var(--primary-dark); color: white; }
+
+.badge { padding: 5px 10px; border-radius: 12px; font-size: 10px; font-weight: 800; color: white; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.bg-mono { background: linear-gradient(135deg, #8b5cf6, #6d28d9); } 
+.bg-capsule { background: linear-gradient(135deg, #f59e0b, #d97706); } 
+.bg-d3h { background: linear-gradient(135deg, #10b981, #059669); } 
+.bg-default { background: #94a3b8; }
