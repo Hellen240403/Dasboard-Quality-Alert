@@ -502,6 +502,50 @@ export default function QualityAlertDashboard() {
   const capsuleSummary = useMemo(() => generateSummary("CAPSULE", masterDefects.CAPSULE), [filteredData]);
   const nd3hSummary = useMemo(() => generateSummary("D3H", masterDefects.ND3H), [filteredData]); 
 
+  // --- LOGIKA KPI SCORECARDS ---
+  const kpiStats = useMemo(() => {
+    const totalAlerts = filteredData.length;
+
+    // 1. Cari Top Defect (Menggabungkan semua summary tim, abaikan kategori "Other" jika memungkinkan)
+    const combinedDefects: Record<string, number> = {};
+    [...capsuleSummary, ...monoSummary, ...nd3hSummary].forEach(item => {
+      if (item.label !== "Other" && item.count > 0) {
+        combinedDefects[item.label] = (combinedDefects[item.label] || 0) + item.count;
+      }
+    });
+
+    let topDefect = { label: "Belum ada data", count: 0 };
+    for (const [label, count] of Object.entries(combinedDefects)) {
+      if (count > topDefect.count) {
+        topDefect = { label, count };
+      }
+    }
+    // Fallback jika semua data adalah "Other"
+    if (topDefect.count === 0 && totalAlerts > 0) {
+      topDefect = { label: "Other / Uncategorized", count: totalAlerts };
+    }
+
+    // 2. Cari Area Paling Kritis
+    const areaCounts: Record<string, number> = {
+      "Capsule Team": capsuleSummary.reduce((sum, item) => sum + item.count, 0),
+      "Mono Team": monoSummary.reduce((sum, item) => sum + item.count, 0),
+      "ND3H / D3H Team": nd3hSummary.reduce((sum, item) => sum + item.count, 0),
+    };
+
+    let criticalArea = { name: "-", count: 0, percent: 0 };
+    for (const [name, count] of Object.entries(areaCounts)) {
+      if (count > criticalArea.count) {
+        criticalArea = {
+          name,
+          count,
+          percent: totalAlerts > 0 ? Math.round((count / totalAlerts) * 100) : 0
+        };
+      }
+    }
+
+    return { totalAlerts, topDefect, criticalArea };
+  }, [filteredData, capsuleSummary, monoSummary, nd3hSummary]);
+
   const handleDateClick = (fullDate: string) => {
       if (!dateRange.start || (dateRange.start && dateRange.end)) { setDateRange({ start: fullDate, end: null });
       } else {
@@ -1034,10 +1078,10 @@ export default function QualityAlertDashboard() {
                   Total Alerts
                 </h3>
                 <div style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a', marginTop: '10px' }}>
-                  1,442
+                  {kpiStats.totalAlerts.toLocaleString('id-ID')}
                 </div>
                 <div style={{ fontSize: '12px', color: '#10b981', marginTop: '5px', fontWeight: 600 }}>
-                  ⬇️ Turun 12% dari bulan lalu
+                  📊 Update otomatis sesuai filter
                 </div>
               </div>
 
@@ -1046,11 +1090,11 @@ export default function QualityAlertDashboard() {
                 <h3 style={{ fontSize: '14px', color: '#64748b', margin: 0, fontWeight: 600, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                   Top Defect Issue
                 </h3>
-                <div style={{ fontSize: '20px', fontWeight: '800', color: '#b91c1c', marginTop: '15px', lineHeight: '1.2' }}>
-                  Kondisi area kerja bermasalah
+                <div style={{ fontSize: '18px', fontWeight: '800', color: '#b91c1c', marginTop: '15px', lineHeight: '1.2' }}>
+                  {kpiStats.topDefect.label}
                 </div>
                 <div style={{ fontSize: '12px', color: '#64748b', marginTop: '8px', fontWeight: 500 }}>
-                  Penyumbang tertinggi bulan ini
+                  Tercatat {kpiStats.topDefect.count} Kasus
                 </div>
               </div>
 
@@ -1060,15 +1104,15 @@ export default function QualityAlertDashboard() {
                   Area Paling Kritis
                 </h3>
                 <div style={{ fontSize: '24px', fontWeight: '900', color: '#c2410c', marginTop: '12px' }}>
-                  Capsule Team
+                  {kpiStats.criticalArea.name}
                 </div>
                 <div style={{ fontSize: '12px', color: '#64748b', marginTop: '5px', fontWeight: 500 }}>
-                  Menyumbang 674 Alert (46%)
+                  Menyumbang {kpiStats.criticalArea.count} Alert ({kpiStats.criticalArea.percent}%)
                 </div>
               </div>
 
             </div>
-            {/* --- KPI SCORECARDS --- */}
+            {/* --- AKHIR KPI SCORECARDS --- */}
 
             <div className="custom-scroll print-scroll-reset" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', flex: 1, overflowY: 'auto', paddingBottom: '10px', minHeight: 0 }}>
               <ParetoChart title="Capsule" data={capsuleSummary} />
