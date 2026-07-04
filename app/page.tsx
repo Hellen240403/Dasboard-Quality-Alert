@@ -806,7 +806,7 @@ export default function QualityAlertDashboard() {
           </>
         )}
 
-        {/* ================= 4. DATA MANAGEMENT (PIVOT) ================= */}
+        {/* ================= 4. DATA MANAGEMENT ================= */}
         {activeView === "Data Management" && (
           <section className="print-area-container page-transition custom-scroll" style={{ flex: 1, minWidth: '700px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '25px', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', overflowY: 'auto', position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
             <h2 style={{ color: '#0f172a', margin: '0 0 20px 0', fontSize: '24px', fontWeight: '900', flexShrink: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>Data Management Pivot</h2>
@@ -842,6 +842,52 @@ export default function QualityAlertDashboard() {
                <h2 style={{ color: '#0f172a', margin: '0', fontSize: '24px', fontWeight: '900', fontFamily: 'system-ui, -apple-system, sans-serif' }}>Analytics Dashboard</h2>
                {dateRange.start && ( <span style={{ fontSize: "13px", color: "#c2410c", background: "#ffedd5", padding: "6px 16px", borderRadius: "20px", fontWeight: "800" }}> 🗓 Rentang Filter: {dateRange.start} {dateRange.end ? ` - ${dateRange.end}` : ''} </span> )}
             </div>
+
+            {/* --- MULAI AREA KPI SCORECARDS (DENGAN DATA PALSU/STATIS) --- */}
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', width: '100%', flexShrink: 0 }}>
+              
+              {/* Card 1: Total Alerts */}
+              <div style={{ flex: 1, background: 'white', padding: '20px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', border: '1px solid #e2e8f0' }}>
+                <h3 style={{ fontSize: '14px', color: '#64748b', margin: 0, fontWeight: 600, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  Total Alerts
+                </h3>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a', marginTop: '10px' }}>
+                  1,442
+                </div>
+                <div style={{ fontSize: '12px', color: '#10b981', marginTop: '5px', fontWeight: 600 }}>
+                  ⬇️ Turun 12% dari bulan lalu
+                </div>
+              </div>
+
+              {/* Card 2: Top Defect Issue */}
+              <div style={{ flex: 1, background: 'white', padding: '20px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', border: '1px solid #e2e8f0' }}>
+                <h3 style={{ fontSize: '14px', color: '#64748b', margin: 0, fontWeight: 600, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  Top Defect Issue
+                </h3>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: '#b91c1c', marginTop: '15px', lineHeight: '1.2' }}>
+                  Kondisi area kerja bermasalah
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '8px', fontWeight: 500 }}>
+                  Penyumbang tertinggi bulan ini
+                </div>
+              </div>
+
+              {/* Card 3: Area Paling Kritis */}
+              <div style={{ flex: 1, background: 'white', padding: '20px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', border: '1px solid #e2e8f0' }}>
+                <h3 style={{ fontSize: '14px', color: '#64748b', margin: 0, fontWeight: 600, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  Area Paling Kritis
+                </h3>
+                <div style={{ fontSize: '24px', fontWeight: '900', color: '#c2410c', marginTop: '12px' }}>
+                  Capsule Team
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '5px', fontWeight: 500 }}>
+                  Menyumbang 674 Alert (46%)
+                </div>
+              </div>
+
+            </div>
+            {/* --- AKHIR AREA KPI SCORECARDS --- */}
+
             <div className="custom-scroll print-scroll-reset" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', flex: 1, overflowY: 'auto', paddingBottom: '10px', minHeight: 0 }}>
               <ParetoChart title="Capsule" data={capsuleSummary} />
               <ParetoChart title="Mono" data={monoSummary} />
